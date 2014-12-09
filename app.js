@@ -18,11 +18,14 @@ var server = net.createServer(function (socket) {
   cutter.on('packet', function (packet) {
     // var clientMsg = parsePacket(packet);
     // console.log('got client message: ', clientMsg);
-    //
     var dir = parsePacket(packet);
+    fs.readFile(dir, function (err, data) {
+      if (err) throw err;
+      console.log(data);
+      var serverPacket = createPacket(data);
+      socket.write(serverPacket);
+    });
 
-    var serverPacket = createPacket(dir);
-    socket.write(serverPacket);
   });
 
   // var serverPacket = createPacket('hello client');
@@ -46,6 +49,5 @@ function createPacket(file) {
 function parsePacket(packet) {
   var head = packet.slice(0, 4);
   var body = packet.slice(4, packet.length);
-  var dir = body.toString();
-  //return dir;
+  return body.toString();
 }

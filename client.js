@@ -25,7 +25,8 @@ client.on('end', function () {
   console.log('client disconnected');
 });
 
-var clientPacket = createPacket('GET', 'index.html');
+var clientPacket = createPacket('index.html');
+client.write(clientPacket);
 // var clientPacket = createPacket('hello server');
 // client.write(clientPacket);
 
@@ -40,8 +41,8 @@ var clientPacket = createPacket('GET', 'index.html');
 
 //---------------helpers------------------//
 
-function createPacket(method, dir) {
-  var head = new Buffer(method);
+function createPacket(dir) {
+  var head = new Buffer(4);
   var body = new Buffer(dir);
   // write body's length into head
   head.writeInt32BE(body.length, 0);
