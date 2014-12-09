@@ -29,7 +29,7 @@ client.on('end', function () {
   console.log('client disconnected');
 });
 
-var clientPacket = createPacket('index1.html');
+var clientPacket = createPacket('index.html');
 client.write(clientPacket);
 // var clientPacket = createPacket('hello server');
 // client.write(clientPacket);
@@ -57,8 +57,8 @@ function createPacket(dir) {
 
 function parsePacket(packet) {
   var head = packet.slice(0, 4);
-  var error = packet.slice(4, 5);
-  var body = packet.slice(5, packet.length);
+  var error = packet.slice(3, 4);
+  var body = packet.slice(4, packet.length);
   var response = {
     "error": error.toString(),
     "content": body.toString()

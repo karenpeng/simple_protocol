@@ -50,7 +50,7 @@ function createPacket(isError, file) {
   var body = new Buffer(file);
   // write body's length into head
   head.writeInt32BE(body.length, 0);
-  head.writeInt32BE(isError, 5);
+  head.writeInt32BE(isError, 4);
 
   // concat head and body
   return Buffer.concat([head, body]);
