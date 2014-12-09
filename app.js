@@ -20,9 +20,17 @@ var server = net.createServer(function (socket) {
     // console.log('got client message: ', clientMsg);
     var dir = parsePacket(packet);
     fs.readFile(dir, function (err, data) {
-      if (err) throw err;
+      // if (err) {
+      //   var serverPacket = createPacket(err);
+      //   socket.write(serverPacket);
+      // }
+      if (err) {
+        var serverPacket = createPacket(1, "");
+        socket.write(serverPacket);
+        return;
+      }
       console.log(data);
-      var serverPacket = createPacket(data);
+      var serverPacket = createPacket(0, data);
       socket.write(serverPacket);
     });
 
@@ -37,11 +45,13 @@ server.listen(12345);
 
 //---------------helpers------------------//
 
-function createPacket(file) {
-  var head = new Buffer(4);
+function createPacket(isError, file) {
+  var head = new Buffer(5);
   var body = new Buffer(file);
   // write body's length into head
   head.writeInt32BE(body.length, 0);
+  head.writeInt32BE(isError, 5);
+
   // concat head and body
   return Buffer.concat([head, body]);
 }

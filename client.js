@@ -11,7 +11,11 @@ function packetLength(data) {
 var cutter = new Cutter(4, packetLength);
 cutter.on('packet', function (packet) {
   var serverMsg = parsePacket(packet);
-  console.log('got server message: ', serverMsg);
+  if (serverMsg.error === "0") {
+    console.log('got server message: ', serverMsg.content);
+  } else {
+    console.log('error (ಠ_ಠ)');
+  }
 });
 
 var client = net.connect({
@@ -25,7 +29,7 @@ client.on('end', function () {
   console.log('client disconnected');
 });
 
-var clientPacket = createPacket('index.html');
+var clientPacket = createPacket('index1.html');
 client.write(clientPacket);
 // var clientPacket = createPacket('hello server');
 // client.write(clientPacket);
@@ -42,6 +46,7 @@ client.write(clientPacket);
 //---------------helpers------------------//
 
 function createPacket(dir) {
+  //four is because body.length is an integer so takes up 4 bytes
   var head = new Buffer(4);
   var body = new Buffer(dir);
   // write body's length into head
@@ -52,6 +57,11 @@ function createPacket(dir) {
 
 function parsePacket(packet) {
   var head = packet.slice(0, 4);
-  var body = packet.slice(4, packet.length);
-  return body.toString();
+  var error = packet.slice(4, 5);
+  var body = packet.slice(5, packet.length);
+  var response = {
+    "error": error.toString(),
+    "content": body.toString()
+  };
+  return response;
 }
