@@ -11,11 +11,13 @@ function packetLength(data) {
 var cutter = new Cutter(4, packetLength);
 cutter.on('packet', function (packet) {
   var serverMsg = parsePacket(packet);
-  if (serverMsg.error === "0") {
-    console.log('got server message: ', serverMsg.content);
-  } else {
-    console.log('error (ಠ_ಠ)');
-  }
+  //console.log(serverMsg.error, serverMsg.content);
+  // if (serverMsg.error === "0") {
+  //   console.log('got server message: ', serverMsg.content);
+  // } else {
+  //   //console.log('error ');
+  // }
+  console.log('got server message: ', serverMsg.content);
 });
 
 var client = net.connect({
@@ -57,8 +59,9 @@ function createPacket(dir) {
 
 function parsePacket(packet) {
   var head = packet.slice(0, 4);
-  var error = packet.slice(3, 4);
-  var body = packet.slice(4, packet.length);
+  var error = packet.slice(4, 8);
+  console.log(error);
+  var body = packet.slice(8, packet.length);
   var response = {
     "error": error.toString(),
     "content": body.toString()

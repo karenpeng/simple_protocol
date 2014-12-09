@@ -46,7 +46,7 @@ server.listen(12345);
 //---------------helpers------------------//
 
 function createPacket(isError, file) {
-  var head = new Buffer(5);
+  var head = new Buffer(8);
   var body = new Buffer(file);
   // write body's length into head
   head.writeInt32BE(body.length, 0);
