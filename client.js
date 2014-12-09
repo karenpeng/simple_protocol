@@ -5,18 +5,18 @@ var net = require('net');
  * must return length of head + body
  */
 function packetLength(data) {
-  return 4 + data.readInt32BE(0);
+  return 8 + data.readInt32BE(0);
 }
 
 var cutter = new Cutter(4, packetLength);
 cutter.on('packet', function (packet) {
   var serverMsg = parsePacket(packet);
-  //console.log(serverMsg.error, serverMsg.content);
-  if (serverMsg.error === "0") {
-    console.log('got server message: ', serverMsg.content);
-  } else {
-    console.log('error (ಥ_ಥ)');
-  }
+  console.log(serverMsg.error, serverMsg.content);
+  // if (serverMsg.error === "1") {
+  //   console.log('error (ಥ_ಥ)');
+  // } else {
+  //   console.log('got server message: ', serverMsg.content);
+  // }
 });
 
 var client = net.connect({
@@ -30,7 +30,7 @@ client.on('end', function () {
   console.log('client disconnected');
 });
 
-var clientPacket = createPacket('index1.html');
+var clientPacket = createPacket('index.html');
 client.write(clientPacket);
 // var clientPacket = createPacket('hello server');
 // client.write(clientPacket);
@@ -59,6 +59,7 @@ function createPacket(dir) {
 function parsePacket(packet) {
   var head = packet.slice(0, 4);
   var error = packet.slice(4, 8);
+  console.log(error.toString());
   var body = packet.slice(8, packet.length);
   var response = {
     "error": error.toString(),
